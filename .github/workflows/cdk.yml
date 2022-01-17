@@ -28,7 +28,7 @@ jobs:
           node-version: "14.x"
 
       - name: Install AWS CDK
-        run: sudo npm install -g aws-cdk
+        run: sudo npm install -g aws-cdk@2.4.0
         working-directory: cdk
 
       - name: Install requirements
