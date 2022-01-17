@@ -23,12 +23,12 @@ jobs:
           aws-region: eu-west-2
 
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v1
         with:
           node-version: "12.x"
 
       - name: Install AWS CDK
-        run: sudo npm install -g aws-cdk@2.4.0
+        run: sudo npm install -g aws-cdk
         working-directory: cdk
 
       - name: Install requirements
