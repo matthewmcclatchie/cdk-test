@@ -40,6 +40,7 @@ jobs:
 
       - name: What is here
         run: ls -la
+        working-directory: 'cdk'
 
       - name: Build
         run: npm run build
