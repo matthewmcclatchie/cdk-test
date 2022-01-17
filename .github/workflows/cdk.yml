@@ -37,6 +37,7 @@ jobs:
 
       - name: Build
         run: npm run build
+        working-directory: cdk
 
       - name: CDK synth
         run: cdk synth
