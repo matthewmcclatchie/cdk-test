@@ -32,7 +32,7 @@ jobs:
         working-directory: cdk
 
       - name: Install requirements
-        run: npm install
+        run: npm ci
         working-directory: cdk
 
       - name: Build
