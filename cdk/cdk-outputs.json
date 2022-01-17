@@ -1,0 +1,9 @@
+{
+  "WeddingTestStack": {
+    "WeddingTestBucketDomainName": "weddingteststack-weddingtestbucketa4440916-13d3kxh9q2nfq.s3.amazonaws.com",
+    "WeddingTestBucketWebsiteUrl": "http://weddingteststack-weddingtestbucketa4440916-13d3kxh9q2nfq.s3-website.eu-west-2.amazonaws.com",
+    "CloudFrontUrl": "d2iqzgxqcdisxy.cloudfront.net",
+    "apiUrl": "https://ae6rykbap4.execute-api.eu-west-2.amazonaws.com/prod/",
+    "WeddingTestEndpoint11243A1C": "https://ae6rykbap4.execute-api.eu-west-2.amazonaws.com/prod/"
+  }
+}
