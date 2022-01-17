@@ -29,21 +29,21 @@ jobs:
 
       - name: Install AWS CDK
         run: sudo npm install -g aws-cdk@2.4.0
-        working-directory: cdk
+        working-directory: ./cdk
 
       - name: Install requirements
         run: npm ci
-        working-directory: cdk
+        working-directory: ./cdk
 
       - name: Build
         run: npm run build
-        working-directory: cdk
+        working-directory: ./cdk
 
       - name: CDK synth
         run: cdk synth
-        working-directory: cdk
+        working-directory: ./cdk
       
       - name: CDK deploy
         run: cdk deploy
-        working-directory: cdk
+        working-directory: ./cdk
       
