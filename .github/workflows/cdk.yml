@@ -48,9 +48,9 @@ jobs:
 
       - name: CDK synth
         run: cdk synth
-        # working-directory: cdk
+        working-directory: cdk
       
       - name: CDK deploy
         run: cdk deploy
-        # working-directory: cdk
+        working-directory: cdk
       
