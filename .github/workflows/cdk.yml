@@ -27,6 +27,12 @@ jobs:
         with:
           node-version: "12.x"
 
+      - name: Install front end dependencies
+        run: npm ci
+
+      - name: Build front end
+        run: npm run build
+
       - name: Install AWS CDK
         run: sudo npm install -g aws-cdk
         working-directory: cdk
