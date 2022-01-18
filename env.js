@@ -1,0 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SES_EMAIL_FROM = exports.SES_EMAIL_TO = exports.SES_REGION = void 0;
+exports.SES_REGION = 'eu-west-2';
+exports.SES_EMAIL_TO = 'mattandstephgetwed@gmail.com';
+exports.SES_EMAIL_FROM = 'hello@stephandmattswedding.co.uk';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZW52LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZW52LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQUFhLFFBQUEsVUFBVSxHQUFHLFdBQVcsQ0FBQztBQUN6QixRQUFBLFlBQVksR0FBRyw4QkFBOEIsQ0FBQztBQUM5QyxRQUFBLGNBQWMsR0FBRyxrQ0FBa0MsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBTRVNfUkVHSU9OID0gJ2V1LXdlc3QtMic7XG5leHBvcnQgY29uc3QgU0VTX0VNQUlMX1RPID0gJ21hdHRhbmRzdGVwaGdldHdlZEBnbWFpbC5jb20nO1xuZXhwb3J0IGNvbnN0IFNFU19FTUFJTF9GUk9NID0gJ2hlbGxvQHN0ZXBoYW5kbWF0dHN3ZWRkaW5nLmNvLnVrJzsiXX0=
