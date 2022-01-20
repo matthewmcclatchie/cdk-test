@@ -10,6 +10,7 @@ import {
   aws_secretsmanager as secretsManager,
   aws_route53 as route53,
   aws_route53_targets as targets,
+  aws_route53_patterns as patterns,
   aws_certificatemanager as certificateManager,
   aws_iam as iam,
   aws_logs as logs
@@ -49,7 +50,6 @@ export class WeddingTestStack extends Stack {
       region: 'us-east-1',
       hostedZone,
       domainName: SITE_URL,
-      subjectAlternativeNames: [`*.${SITE_URL}`],
       validation: certificateManager.CertificateValidation.fromDns(hostedZone),
     });
 
@@ -67,7 +67,7 @@ export class WeddingTestStack extends Stack {
         }
       ],
       viewerCertificate: cloudfront.ViewerCertificate.fromAcmCertificate(certificate, {
-        aliases: [SITE_URL, `*.${SITE_URL}`], // Can I set this to www instead of *??
+        aliases: [SITE_URL],
         securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1,
         sslMethod: cloudfront.SSLMethod.SNI
       })
@@ -90,11 +90,11 @@ export class WeddingTestStack extends Stack {
       target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution))
     });
 
-    new route53.ARecord(this, 'WildCardARecord', {
-      zone: hostedZone,
-      recordName: `*.${SITE_URL}`,
-      target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution))
-  });
+    new patterns.HttpsRedirect(this, 'wwwToNonWww', {
+      recordNames: [`www.${SITE_URL}`],
+      targetDomain: SITE_URL,
+      zone: hostedZone
+    })
 
     // Create an Output
     new CfnOutput(this, 'CloudFrontUrl', {
