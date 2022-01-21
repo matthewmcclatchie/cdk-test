@@ -28,8 +28,7 @@
 
 
 
-
-const { GoogleSpreadsheet } = require('google-spreadsheet');
+import { GoogleSpreadsheet } from 'google-spreadsheet'
 
 exports.handler = async (event: any) => {
     const { body } = event

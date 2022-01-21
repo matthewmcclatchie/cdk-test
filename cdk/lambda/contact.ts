@@ -26,8 +26,7 @@
 
 
 
-
-const AWS = require('aws-sdk');
+import { SES } from 'aws-sdk'
 
 const SES_REGION = 'eu-west-2';
 const SES_EMAIL_TO = 'mattandstephgetwed@gmail.com';
@@ -65,7 +64,7 @@ const sendEmailParams = ({name, email, message}: {name: string, email: string, m
 }
 
 const sendEmail = async ({name, email, message}: {name: string, email: string, message: string}) => {
-  const ses = new AWS.SES({region: SES_REGION});
+  const ses = new SES({region: SES_REGION});
   await ses.sendEmail(sendEmailParams({name, email, message})).promise();
 
   return {
