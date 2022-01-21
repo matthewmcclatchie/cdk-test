@@ -3,17 +3,6 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  const healthcheck = async () => {
-    const req = await fetch(`${process.env.REACT_APP_CLOUDFRONT_URL}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-
-    const res = await req.json()
-    console.log('healthcheck repsonse', res)
-  }
-
   // const doit = async () => {
   //   const req = await fetch(`${process.env.REACT_APP_CLOUDFRONT_URL}/rsvp`, {
   //     method: 'POST',
@@ -48,7 +37,6 @@ function App() {
   // }
 
   useEffect(() => {
-    healthcheck()
     // doit()
     // contactLambda()
   }, [])

@@ -109,13 +109,6 @@ export class WeddingTestStack extends Stack {
     );
 
     // Lambda
-    const defaultHandler = new lambda.Function(this, 'WeddingHealthHandler', {
-      runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset('lambda'),
-      handler: 'default.handler',
-      logRetention: logs.RetentionDays.FIVE_DAYS,
-    })
-
     const rsvpHandler = new lambda.Function(this, 'WeddingTestRsvpHandler', {
       environment: {
         CLIENT_EMAIL: testingGoogleJson2Secrets.secretValueFromJson('client_email').toString(),
@@ -155,10 +148,8 @@ export class WeddingTestStack extends Stack {
     );
 
     // API Gateway
-    const api = new apigw.LambdaRestApi(this, 'WeddingTestEndpoint', {
+    const api = new apigw.RestApi(this, 'WeddingTestEndpoint', {
       description: 'Wedding test api gateway',
-      handler: defaultHandler, // Fallback handlder
-      proxy: false,
       defaultCorsPreflightOptions: {
         allowHeaders: [
           'Content-Type',
@@ -166,14 +157,15 @@ export class WeddingTestStack extends Stack {
           'Authorization',
           'X-Api-Key',
         ],
-        allowMethods: ['GET', 'POST',], // Should only need a GET here
+        allowMethods: ['POST'],
         allowCredentials: true,
-        allowOrigins: ['*'], // Update this to reflect PROD url? Could include static CF url too?
+        allowOrigins: [
+          'http://localhost:3000',
+          'https://d15bylhfejzrvc.cloudfront.net',
+          'https://stephandmattswedding.co.uk'
+        ],
       },
     })
-
-    // root
-    api.root.addMethod('GET', new apigw.LambdaIntegration(defaultHandler));
 
     // rsvp
     const rsvp = api.root.addResource('rsvp');
