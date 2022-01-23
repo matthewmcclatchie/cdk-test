@@ -11,7 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/google-spreadsheet": "^3.1.5",
-    "aws-sdk": "^2.1060.0",
     "google-spreadsheet": "^3.2.0"
   }
 }

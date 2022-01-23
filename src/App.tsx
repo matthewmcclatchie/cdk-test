@@ -3,6 +3,24 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const testing = async () => {
+    
+    const req = await fetch(`${process.env.REACT_APP_CLOUDFRONT_URL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: 'FROM FRONT END',
+      }),
+    })
+
+    console.log('res', req)
+
+    const res = await req.json()
+    console.log('test response', res)
+  }
+
   // const doit = async () => {
   //   const req = await fetch(`${process.env.REACT_APP_CLOUDFRONT_URL}/rsvp`, {
   //     method: 'POST',
@@ -37,6 +55,7 @@ function App() {
   // }
 
   useEffect(() => {
+    testing()
     // doit()
     // contactLambda()
   }, [])

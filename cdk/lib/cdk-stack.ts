@@ -1,4 +1,4 @@
-import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import {
   CfnOutput,
@@ -13,7 +13,8 @@ import {
   aws_route53_patterns as patterns,
   aws_certificatemanager as certificateManager,
   aws_iam as iam,
-  aws_logs as logs
+  aws_logs as logs,
+  aws_cloudwatch as cloudwatch,
 } from 'aws-cdk-lib';
 
 import {SES_EMAIL_FROM, SES_REGION} from '../../env';
@@ -108,7 +109,60 @@ export class WeddingTestStack extends Stack {
       'testingGoogleJson2',
     );
 
+    //
+    //
+    //
+    //
+    //
+    //
     // Lambda
+    const testHandler = new lambda.Function(this, 'TestingHandler', {
+      environment: {
+        CLIENT_EMAIL: testingGoogleJson2Secrets.secretValueFromJson('client_email').toString(),
+        PRIVATE_KEY: testingGoogleJson2Secrets.secretValueFromJson('private_key').toString(),
+      },
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code: lambda.Code.fromAsset('lambda'),
+      handler: 'testing.handler',
+      logRetention: logs.RetentionDays.ONE_DAY
+    })
+
+    
+    // Cloudwatch Alarms
+    const TestingHandlerErrors = testHandler.metricErrors({
+      period: Duration.minutes(1)
+    });
+
+    new cloudwatch.Alarm(this, 'TestingHandler-errors-alarm', {
+      metric: TestingHandlerErrors,
+      threshold: 1,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+      evaluationPeriods: 1,
+      alarmDescription: 'Alarm if the SUM of Errors is greater than or equal to the threshold (1) for 1 evaluation period',
+    });
+
+    const TestingHandlerInvocation = testHandler.metricInvocations({
+      period: Duration.minutes(5),
+    });
+
+    new cloudwatch.Alarm(this, 'TestingHandler-invocations-alarm', {
+      metric: TestingHandlerInvocation,
+      threshold: 10,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+      evaluationPeriods: 1,
+      alarmDescription: 'Alarm if the SUM of Lambda invocations is greater than or equal to the threshold (10) for 1 evaluation period',
+    });
+    
+
+
+    //
+    //
+    //
+    //
+    //
+    //
+
+    /*
     const rsvpHandler = new lambda.Function(this, 'WeddingTestRsvpHandler', {
       environment: {
         CLIENT_EMAIL: testingGoogleJson2Secrets.secretValueFromJson('client_email').toString(),
@@ -130,6 +184,7 @@ export class WeddingTestStack extends Stack {
       logRetention: logs.RetentionDays.FIVE_DAYS,
     })
 
+
     contactHandler.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -146,6 +201,7 @@ export class WeddingTestStack extends Stack {
         // ],
       }),
     );
+    */
 
     // API Gateway
     const api = new apigw.RestApi(this, 'WeddingTestEndpoint', {
@@ -157,7 +213,7 @@ export class WeddingTestStack extends Stack {
           'Authorization',
           'X-Api-Key',
         ],
-        allowMethods: ['POST'],
+        allowMethods: ['OPTIONS', 'GET', 'POST'],
         allowCredentials: true,
         allowOrigins: [
           'http://localhost:3000',
@@ -167,13 +223,31 @@ export class WeddingTestStack extends Stack {
       },
     })
 
+
+    //
+    //
+    //
+    //
+    //
+    //
+    // test
+    api.root.addMethod('POST', new apigw.LambdaIntegration(testHandler));
+    //
+    //
+    //
+    //
+    //
+    //
+
     // rsvp
+    /*
     const rsvp = api.root.addResource('rsvp');
     rsvp.addMethod('POST', new apigw.LambdaIntegration(rsvpHandler));
 
     //contact
     const contact = api.root.addResource('contact');
     contact.addMethod('POST', new apigw.LambdaIntegration(contactHandler));
+    */
 
     new CfnOutput(this, 'apiUrl', {value: api.url});
   }
