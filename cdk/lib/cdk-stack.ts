@@ -1,5 +1,6 @@
 import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import * as path from 'path'
 import {
   CfnOutput,
   aws_s3 as s3,
@@ -15,6 +16,9 @@ import {
   aws_iam as iam,
   aws_logs as logs,
   aws_cloudwatch as cloudwatch,
+  aws_sns as sns,
+  aws_sns_subscriptions as subscriptions,
+  aws_lambda_nodejs as lambdaNode,
 } from 'aws-cdk-lib';
 
 import {SES_EMAIL_FROM, SES_REGION} from '../../env';
@@ -116,15 +120,22 @@ export class WeddingTestStack extends Stack {
     //
     //
     // Lambda
-    const testHandler = new lambda.Function(this, 'TestingHandler', {
-      environment: {
-        CLIENT_EMAIL: testingGoogleJson2Secrets.secretValueFromJson('client_email').toString(),
-        PRIVATE_KEY: testingGoogleJson2Secrets.secretValueFromJson('private_key').toString(),
-      },
+    // const testHandler = new lambda.Function(this, 'TestingHandler', {
+    //   environment: {
+    //     CLIENT_EMAIL: testingGoogleJson2Secrets.secretValueFromJson('client_email').toString(),
+    //     PRIVATE_KEY: testingGoogleJson2Secrets.secretValueFromJson('private_key').toString(),
+    //   },
+    //   runtime: lambda.Runtime.NODEJS_14_X,
+    //   code: lambda.Code.fromAsset('lambda'),
+    //   handler: 'testing.handler',
+    //   logRetention: logs.RetentionDays.ONE_DAY
+    // })
+
+    const testHandler = new lambdaNode.NodejsFunction(this, 'TestingHandlerNode', {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset('lambda'),
-      handler: 'testing.handler',
-      logRetention: logs.RetentionDays.ONE_DAY
+      entry: path.join(__dirname, `/../lambda/testing/index.ts`),
+      handler: 'handler',
+      timeout: Duration.seconds(5),
     })
 
     
@@ -250,5 +261,27 @@ export class WeddingTestStack extends Stack {
     */
 
     new CfnOutput(this, 'apiUrl', {value: api.url});
+
+
+
+
+
+    // SNS attempt
+    testHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'SNS:Publish',
+        ],
+        resources: ['*'],
+      }),
+    );
+
+    const topic = new sns.Topic(this, 'wedding-test-svp-topic', {
+      displayName: 'Wedding test RSVP topic', // This is what will be shown in the email
+    });
+
+    // Working
+    topic.addSubscription(new subscriptions.EmailSubscription('mattandstephgetwed@gmail.com'));
   }
 }
